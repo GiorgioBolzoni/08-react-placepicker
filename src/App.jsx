@@ -5,11 +5,25 @@ import { AVAILABLE_PLACES } from './data.js';
 import Modal from './components/Modal.jsx';
 import DeleteConfirmation from './components/DeleteConfirmation.jsx';
 import logoImg from './assets/logo.png';
+import {sortPlacesByDistance} from './loc.js';
 
 function App() {
   const modal = useRef();
   const selectedPlace = useRef();
+  const [availablePlaces, setAvailablePlaces] = useState([]);
   const [pickedPlaces, setPickedPlaces] = useState([]);
+
+// ottengo la posizione dell'utente dal browser
+// è un Side Effect, ovvero un effetto collaterale, in quanto non è direttamente collegato al rendering dell'applicazione, ma è utile al suo scopo e viene eseguito a parte (una volta che la funzione App viene eseguita)
+  navigator.geolocation.getCurrentPosition((position)=> {
+    const sortedPlaces = sortPlacesByDistance(AVAILABLE_PLACES, position.coords.latitude, position.coords.longitude);
+
+    setAvailablePlaces(sortedPlaces);
+  }); // sistema fornito dal browser stesso
+
+  // NB: problema loop infinito causato dal continuo aggiornamento dello stato con useState
+ ////////////////////////////////////////////////////////
+
 
   function handleStartRemovePlace(id) {
     modal.current.open();
@@ -63,7 +77,7 @@ function App() {
         />
         <Places
           title="Available Places"
-          places={AVAILABLE_PLACES}
+          places={availablePlaces}
           onSelectPlace={handleSelectPlace}
         />
       </main>

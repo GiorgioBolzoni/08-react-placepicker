@@ -104,6 +104,7 @@ header p {
   box-shadow: 0 0 8px 4px rgba(255, 217, 0, 0.6);
   border-radius: 8px;
   transform: rotate(5deg);
+  cursor: pointer;
 }
 
 .place-item:nth-child(even) button:hover,
@@ -111,6 +112,7 @@ header p {
   box-shadow: 0 0 8px 4px rgba(255, 217, 0, 0.6);
   border-radius: 8px;
   transform: rotate(-5deg);
+  cursor: pointer;
 }
 
 .place-item img {
