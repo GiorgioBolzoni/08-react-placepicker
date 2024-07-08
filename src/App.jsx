@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 import Places from './components/Places.jsx';
 import { AVAILABLE_PLACES } from './data.js';
@@ -13,16 +13,16 @@ function App() {
   const [availablePlaces, setAvailablePlaces] = useState([]);
   const [pickedPlaces, setPickedPlaces] = useState([]);
 
-// ottengo la posizione dell'utente dal browser
-// è un Side Effect, ovvero un effetto collaterale, in quanto non è direttamente collegato al rendering dell'applicazione, ma è utile al suo scopo e viene eseguito a parte (una volta che la funzione App viene eseguita)
+  // useEffect viene eseguito dopo l'esecuzione di ogni componente e non crea il loop
+useEffect(() => {
   navigator.geolocation.getCurrentPosition((position)=> {
     const sortedPlaces = sortPlacesByDistance(AVAILABLE_PLACES, position.coords.latitude, position.coords.longitude);
 
     setAvailablePlaces(sortedPlaces);
-  }); // sistema fornito dal browser stesso
+  }); 
 
-  // NB: problema loop infinito causato dal continuo aggiornamento dello stato con useState
- ////////////////////////////////////////////////////////
+  }, []);
+// [] è un array vuoto di dipendenze, quando queste dipendenze non cambiano non viene rieseguito il codice del primo elemento, ovvero navigator.geolocation.getCurrentPosition.... Essendo vuoto l'array, le dipendenze non possono cambiare, quindi niente loop
 
 
   function handleStartRemovePlace(id) {
@@ -78,6 +78,7 @@ function App() {
         <Places
           title="Available Places"
           places={availablePlaces}
+          fallbackText="Sorting places by distance..."
           onSelectPlace={handleSelectPlace}
         />
       </main>
