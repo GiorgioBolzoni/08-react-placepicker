@@ -42,6 +42,15 @@ useEffect(() => {
       const place = AVAILABLE_PLACES.find((place) => place.id === id);
       return [place, ...prevPickedPlaces];
     });
+
+    // NB: quello che segue è sempre un Side Effect ma non posso utilizzare useEffect perchè gli Hooks non possono essere utilizzati all'interno di altre funzioni annidate (qui è handleSelectPlace()), ma solo nel root di App (vedi l'esempio in cui si reperisce la posizione dell'utente). Inoltre non si crea loop perchè viene eseguito solo quando viene eseguita la funzione
+
+    // Salva nel local storage i luoghi selezionati anche se ricarico la pagina, è fornito anche questo dal browser
+    const storeIds = JSON.parse(localStorage.setItem('selectedPlaces')) || []; // trasforma stringa in array
+    if (storeIds.indexOf(id) === -1){
+    localStorage.setItem('selectedPlaces', JSON.stringify([id, ...storeIds])); // trasforma nuovamente array in stringa
+    }
+    //if x assicurarmi di non salvare più volte il place con lo stesso id: -1 indica che non è ancora lì dentro
   }
 
   function handleRemovePlace() {
