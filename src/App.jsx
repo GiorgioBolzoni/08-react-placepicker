@@ -60,7 +60,7 @@ useEffect(() => {
     setPickedPlaces((prevPickedPlaces) =>
       prevPickedPlaces.filter((place) => place.id !== selectedPlace.current)
     );
-    setModalIsOpen(false);
+    // setModalIsOpen(false);
 
     const storeIds = JSON.parse(localStorage.getItem('selectedPlaces')) || [];
     localStorage.setItem('selectedPlaces', JSON.stringify(storeIds.filter((id)=> id!== selectedPlace.current))); 
