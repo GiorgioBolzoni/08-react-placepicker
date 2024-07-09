@@ -7,11 +7,14 @@ import DeleteConfirmation from './components/DeleteConfirmation.jsx';
 import logoImg from './assets/logo.png';
 import {sortPlacesByDistance} from './loc.js';
 
+
+const storeIds = JSON.parse(localStorage.getItem('selectedPlaces')) || [];
+const storedPlaces = storeIds.map(id => AVAILABLE_PLACES.find((place)=>place.id === id)); // restituisce un array di oggetti basati sul local storage di storeIds (riga precedente)
 function App() {
   const modal = useRef();
   const selectedPlace = useRef();
   const [availablePlaces, setAvailablePlaces] = useState([]);
-  const [pickedPlaces, setPickedPlaces] = useState([]);
+  const [pickedPlaces, setPickedPlaces] = useState(storedPlaces);  
 
   // useEffect viene eseguito dopo l'esecuzione di ogni componente e non crea il loop
 useEffect(() => {
@@ -46,7 +49,7 @@ useEffect(() => {
     // NB: quello che segue è sempre un Side Effect ma non posso utilizzare useEffect perchè gli Hooks non possono essere utilizzati all'interno di altre funzioni annidate (qui è handleSelectPlace()), ma solo nel root di App (vedi l'esempio in cui si reperisce la posizione dell'utente). Inoltre non si crea loop perchè viene eseguito solo quando viene eseguita la funzione
 
     // Salva nel local storage i luoghi selezionati anche se ricarico la pagina, è fornito anche questo dal browser
-    const storeIds = JSON.parse(localStorage.setItem('selectedPlaces')) || []; // trasforma stringa in array
+    const storeIds = JSON.parse(localStorage.getItem('selectedPlaces')) || []; // trasforma stringa in array
     if (storeIds.indexOf(id) === -1){
     localStorage.setItem('selectedPlaces', JSON.stringify([id, ...storeIds])); // trasforma nuovamente array in stringa
     }
@@ -58,6 +61,9 @@ useEffect(() => {
       prevPickedPlaces.filter((place) => place.id !== selectedPlace.current)
     );
     modal.current.close();
+
+    const storeIds = JSON.parse(localStorage.getItem('selectedPlaces')) || [];
+    localStorage.setItem('selectedPlaces', JSON.stringify(storeIds.filter((id)=> id!== selectedPlace.current))); 
   }
 
   return (
