@@ -13,7 +13,7 @@ useEffect(() => {
     console.log('Cleaning up timer');
     clearTimeout(timer);
   }
-}, [onConfirm]); // aggiungere onConfirm come dipendenza può essere un problema perchè è una funzione: rischio di loop infinito
+}, [onConfirm]); // aggiungere onConfirm come dipendenza può essere un problema perchè è una funzione: rischio di loop infinito(necessario useCallback Hook) perchè handleRemovePlace viene ricreata più volte e onConfirm non sarà sempre la stessa
 
   return (
     <div id="delete-confirmation">

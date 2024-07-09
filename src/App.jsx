@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 
 import Places from './components/Places.jsx';
 import { AVAILABLE_PLACES } from './data.js';
@@ -56,15 +56,17 @@ useEffect(() => {
     //if x assicurarmi di non salvare più volte il place con lo stesso id: -1 indica che non è ancora lì dentro
   }
 
-  function handleRemovePlace() {
-    setPickedPlaces((prevPickedPlaces) =>
-      prevPickedPlaces.filter((place) => place.id !== selectedPlace.current)
-    );
-    // setModalIsOpen(false);
-
-    const storeIds = JSON.parse(localStorage.getItem('selectedPlaces')) || [];
-    localStorage.setItem('selectedPlaces', JSON.stringify(storeIds.filter((id)=> id!== selectedPlace.current))); 
-  }
+  const handleRemovePlace = useCallback(
+    function handleRemovePlace() {
+      setPickedPlaces((prevPickedPlaces) =>
+        prevPickedPlaces.filter((place) => place.id !== selectedPlace.current)
+      );
+      setModalIsOpen(false);
+  
+      const storeIds = JSON.parse(localStorage.getItem('selectedPlaces')) || [];
+      localStorage.setItem('selectedPlaces', JSON.stringify(storeIds.filter((id)=> id!== selectedPlace.current))); 
+    }, []); 
+    // nelle dipendenze vanno aggiunte tutte le prop/object interne ad useCallback ma in questo caso non serve perchè ho solo un aggiornamento di stato(setPickedPlaces) e una funzione fornita dal browser(localStorage) che non servono a definire se deve essere rieseguita altre volte o meno
 
   return (
     <>
